@@ -2,7 +2,7 @@ from fastapi import FastAPI,Depends,HTTPException,status
 from database_models import User
 from database_config import Base,get_db,engine
 from pydantic_schemas import *
-
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.exc import IntegrityError,SQLAlchemyError
 from sqlalchemy.orm import Session
 from authentication import *
@@ -13,7 +13,17 @@ Base.metadata.create_all(bind=engine)  # executed for table creation if does not
 
 app=FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
 
+    allow_origins=[
+        "http://localhost:5173",
+    ],
+
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 # Doubttteddddd   
 
 from fastapi.security import OAuth2PasswordBearer
