@@ -10,4 +10,4 @@ class User(Base):
     password = Column(String(255), nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
     user_status=Column(Boolean,default=True)  # for soft delete
-    is_active=Column(Boolean,default=True)   # fro login or logout
+    is_active=Column(Boolean,default=False)   # for login or logout

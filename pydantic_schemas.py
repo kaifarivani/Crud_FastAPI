@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr, Field, field_validator
-from typing import Annotated
+from typing import Annotated,List,Optional
 import re
 from datetime import datetime
 
@@ -79,6 +79,12 @@ class SignupUser(BaseModel):
         return value
 
 
+
+class ResponseSignupUser(BaseModel):
+    status:int
+    message:str
+    data:dict
+
 class SigninUser(BaseModel):
 
     email: Annotated[
@@ -101,39 +107,34 @@ class SigninUser(BaseModel):
         )
     ]
 
+class UserData(BaseModel):
+    id: int
+    username: str
+    email: str
+    created_at: datetime
+    user_status: bool
+    is_active: bool
+
+    class Config:
+        from_attributes = True
+
 
 class UserResponse(BaseModel):
-    id:int
-    username:str
-    email:str
-    user_status:bool
-    created_at:datetime
-    is_active:bool
-    class Config:
-        from_attributes:True
+    status: int
+    message: str
+    data: UserData
 
 
+
+class UsersListResponse(BaseModel):
+    status: int
+    message: str
+    data: List[UserData]
 
 class UserUpdate(BaseModel):
-    id:int
-    username: Annotated[
-        str,
-        Field(
-            ...,
-            min_length=3,
-            max_length=50,
-            title="Username",
-            description="Enter your username"
-        )
-    ]
+    username: Optional[str]=None
+    email:Optional[EmailStr]=None
 
-    email: Annotated[
-        EmailStr,
-        Field(
-            ...,
-            title="Email",
-            description="example@gmail.com"
-        )
-    ]
+    
 
 
