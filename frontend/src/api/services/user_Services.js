@@ -27,7 +27,7 @@ export const UserServices = {
     getSingleUser: async (id) => {
 
         const response = await api.get(
-            `/user/${id}`
+            `/get_single_user/${id}`
         );
 
         return response.data;
@@ -36,7 +36,7 @@ export const UserServices = {
     // Update User
     updateUser: async (id, data) => {
 
-        const response = await api.put(
+        const response = await api.patch(
             `/update_user/${id}`,
             data
         );
@@ -45,10 +45,10 @@ export const UserServices = {
     },
 
     // Delete User
-    deleteUser: async (id) => {
+    softDeleteUser: async (id) => {
 
         const response = await api.delete(
-            `/delete_user/${id}`
+            `/soft_delete_user/${id}`
         );
 
         return response.data;
@@ -63,5 +63,23 @@ export const UserServices = {
 
         return response.data;
     },
+     
+    // Trash Users ()
+    getTrashUser: async () => {
+
+        const response = await api.get(
+            "/trash_user"
+        );
+
+        return response.data;
+    },
+
+    // Permanently Deleted User
+    hardDeleteUser:async (id)=>{
+        const response=await api.delete(
+            `/hard_delete_user/${id}`
+        );
+        return response.data;
+    }
 
 };

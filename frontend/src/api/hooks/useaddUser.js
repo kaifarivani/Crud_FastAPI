@@ -74,6 +74,7 @@ export const useAddUser = () => {
                 username: data.username,
                 email: data.email,
                 password: data.password,
+                confirm_password:data.confirmPassword
             };
 
             const response = await UserServices.addUser(payload);
@@ -88,10 +89,12 @@ export const useAddUser = () => {
                     password: "",
                     confirmPassword: "",
                 });
+                alert(" User Created Successfullyy ")
+
 
                 setTimeout(() => {
-                    navigate("/users");
-                }, 1500);
+                    navigate("/dashboard/users");
+                }, 1000);
             }
 
         } catch (err) {

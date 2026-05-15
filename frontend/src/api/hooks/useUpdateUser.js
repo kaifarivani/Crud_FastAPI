@@ -91,7 +91,7 @@ export const useUpdateUser = () => {
                 );
 
                 setTimeout(() => {
-                    navigate("/users");
+                    navigate("/dashboard/users");
                 }, 1500);
             }
 

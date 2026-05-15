@@ -1,102 +1,349 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
+
+import {
+    User,
+    Mail,
+    Lock,
+    Eye,
+    EyeOff,
+    ShieldCheck,
+    ArrowRight,
+    AlertCircle,
+} from "lucide-react";
+
 import { useSignup } from "../api/hooks/useSignup";
 
 function Signup() {
+    const { handleSubmit, handleChange, data, loading, error } = useSignup();
 
-    const {
-        handleSubmit,
-        handleChange,
-        data,
-        loading,
-        error,
-    } = useSignup();
-
-    // Show / Hide Password States
+    // Password Visibility
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-indigo-100 px-4 py-10">
+        <div
+            className="
+                min-h-screen
+                w-full
 
-            <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden">
+                bg-gradient-to-br
+                from-slate-950
+                via-blue-950
+                to-slate-900
 
-                {/* Top Section */}
-                <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-10 text-center">
+                flex items-center justify-center
 
-                    <div className="w-20 h-20 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-                        <span className="text-3xl text-white font-bold">
-                            👤
-                        </span>
+                px-4 sm:px-6
+                py-8
+
+                overflow-hidden
+                relative
+            "
+        >
+            {/* Background Glow */}
+            <div
+                className="
+                    absolute
+                    top-[-120px]
+                    left-[-120px]
+
+                    w-72 h-72
+                    sm:w-80 sm:h-80
+
+                    bg-blue-500/20
+                    blur-3xl
+                    rounded-full
+                "
+            />
+
+            <div
+                className="
+                    absolute
+                    bottom-[-120px]
+                    right-[-120px]
+
+                    w-80 h-80
+                    sm:w-96 sm:h-96
+
+                    bg-indigo-500/20
+                    blur-3xl
+                    rounded-full
+                "
+            />
+
+            {/* Main Card */}
+            <div
+                className="
+                    relative z-10
+
+                    w-full
+                    max-w-md
+
+                    rounded-3xl
+
+                    border border-white/20
+
+                    bg-white/10
+                    backdrop-blur-2xl
+
+                    shadow-2xl
+
+                    overflow-hidden
+                "
+            >
+                {/* Header */}
+                <div
+                    className="
+                        border-b border-white/10
+
+                        bg-white/5
+
+                        px-6 sm:px-8
+                        pt-10 pb-8
+
+                        text-center
+                    "
+                >
+                    {/* Logo */}
+                    <div
+                        className="
+                            mx-auto
+
+                            flex items-center justify-center
+
+                            w-20 h-20
+
+                            rounded-3xl
+
+                            bg-gradient-to-br
+                            from-blue-500
+                            to-indigo-600
+
+                            shadow-2xl
+                        "
+                    >
+                        <ShieldCheck className="w-10 h-10 text-white" />
                     </div>
 
-                    <h1 className="text-3xl font-bold text-white">
+                    <h1
+                        className="
+                            mt-6
+
+                            text-3xl sm:text-4xl
+
+                            font-black
+                            tracking-tight
+
+                            text-white
+                        "
+                    >
                         Create Account
                     </h1>
 
-                    <p className="text-blue-100 mt-2 text-sm">
-                        Signup to access your dashboard
+                    <p
+                        className="
+                            mt-3
+
+                            text-sm sm:text-base
+
+                            leading-relaxed
+                            text-gray-300
+                        "
+                    >
+                        Create your account to access your secure dashboard and manage users
+                        professionally.
                     </p>
                 </div>
 
                 {/* Form Section */}
-                <div className="p-8">
-
-                    {/* Error */}
+                <div
+                    className="
+                        p-6 sm:p-8
+                    "
+                >
+                    {/* Error Message */}
                     {error && (
-                        <div className="mb-5 rounded-2xl border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-600">
-                            {error}
+                        <div
+                            className="
+                                mb-5
+
+                                flex items-start gap-3
+
+                                rounded-2xl
+
+                                border border-red-400/20
+
+                                bg-red-500/10
+
+                                px-4 py-3
+
+                                text-sm
+                                text-red-300
+                            "
+                        >
+                            <AlertCircle
+                                className="
+                                    mt-0.5
+                                    w-5 h-5
+                                    shrink-0
+                                "
+                            />
+
+                            <p>{error}</p>
                         </div>
                     )}
 
                     {/* Form */}
-                    <form
-                        onSubmit={handleSubmit}
-                        className="space-y-5"
-                    >
-
+                    <form onSubmit={handleSubmit} className="space-y-5">
                         {/* Username */}
-                        <div>
-
-                            <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        <div className="space-y-2">
+                            <label
+                                className="
+                                    text-sm
+                                    font-semibold
+                                    text-gray-200
+                                    block
+                                "
+                            >
                                 Username
                             </label>
 
-                            <input
-                                type="text"
-                                name="username"
-                                value={data.username}
-                                onChange={handleChange}
-                                placeholder="Enter your username"
-                                className="w-full rounded-2xl border border-gray-300 bg-gray-50 px-4 py-3 text-gray-700 outline-none transition-all duration-300 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
-                            />
+                            <div className="relative">
+                                <User
+                                    className="
+                                        absolute
+                                        left-4 top-1/2
+                                        -translate-y-1/2
+
+                                        w-5 h-5
+                                        text-gray-400
+                                    "
+                                />
+
+                                <input
+                                    type="text"
+                                    name="username"
+                                    value={data.username}
+                                    onChange={handleChange}
+                                    placeholder="Enter username"
+                                    required
+                                    className="
+                                        w-full
+
+                                        rounded-2xl
+
+                                        border border-white/10
+
+                                        bg-white/5
+
+                                        py-3.5
+                                        pl-12 pr-4
+
+                                        text-sm
+                                        text-white
+
+                                        placeholder:text-gray-400
+
+                                        outline-none
+
+                                        transition-all duration-300
+
+                                        focus:border-blue-400
+                                        focus:bg-white/10
+                                        focus:ring-4
+                                        focus:ring-blue-500/20
+                                    "
+                                />
+                            </div>
                         </div>
 
                         {/* Email */}
-                        <div>
-
-                            <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        <div className="space-y-2">
+                            <label
+                                className="
+                                    text-sm
+                                    font-semibold
+                                    text-gray-200
+                                    block
+                                "
+                            >
                                 Email Address
                             </label>
 
-                            <input
-                                type="email"
-                                name="email"
-                                value={data.email}
-                                onChange={handleChange}
-                                placeholder="Enter your email"
-                                className="w-full rounded-2xl border border-gray-300 bg-gray-50 px-4 py-3 text-gray-700 outline-none transition-all duration-300 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
-                            />
+                            <div className="relative">
+                                <Mail
+                                    className="
+                                        absolute
+                                        left-4 top-1/2
+                                        -translate-y-1/2
+
+                                        w-5 h-5
+                                        text-gray-400
+                                    "
+                                />
+
+                                <input
+                                    type="email"
+                                    name="email"
+                                    value={data.email}
+                                    onChange={handleChange}
+                                    placeholder="Enter your email"
+                                    required
+                                    className="
+                                        w-full
+
+                                        rounded-2xl
+
+                                        border border-white/10
+
+                                        bg-white/5
+
+                                        py-3.5
+                                        pl-12 pr-4
+
+                                        text-sm
+                                        text-white
+
+                                        placeholder:text-gray-400
+
+                                        outline-none
+
+                                        transition-all duration-300
+
+                                        focus:border-blue-400
+                                        focus:bg-white/10
+                                        focus:ring-4
+                                        focus:ring-blue-500/20
+                                    "
+                                />
+                            </div>
                         </div>
 
                         {/* Password */}
-                        <div>
-
-                            <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        <div className="space-y-2">
+                            <label
+                                className="
+                                    text-sm
+                                    font-semibold
+                                    text-gray-200
+                                    block
+                                "
+                            >
                                 Password
                             </label>
 
                             <div className="relative">
+                                <Lock
+                                    className="
+                                        absolute
+                                        left-4 top-1/2
+                                        -translate-y-1/2
+
+                                        w-5 h-5
+                                        text-gray-400
+                                    "
+                                />
 
                                 <input
                                     type={showPassword ? "text" : "password"}
@@ -104,28 +351,82 @@ function Signup() {
                                     value={data.password}
                                     onChange={handleChange}
                                     placeholder="Create password"
-                                    className="w-full rounded-2xl border border-gray-300 bg-gray-50 px-4 py-3 pr-16 text-gray-700 outline-none transition-all duration-300 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                                    required
+                                    className="
+                                        w-full
+
+                                        rounded-2xl
+
+                                        border border-white/10
+
+                                        bg-white/5
+
+                                        py-3.5
+                                        pl-12 pr-14
+
+                                        text-sm
+                                        text-white
+
+                                        placeholder:text-gray-400
+
+                                        outline-none
+
+                                        transition-all duration-300
+
+                                        focus:border-blue-400
+                                        focus:bg-white/10
+                                        focus:ring-4
+                                        focus:ring-blue-500/20
+                                    "
                                 />
 
                                 <button
                                     type="button"
                                     onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-sm font-medium text-blue-600 hover:text-blue-700"
-                                >
-                                    {showPassword ? "Hide" : "Show"}
-                                </button>
+                                    className="
+                                        absolute
+                                        right-4 top-1/2
+                                        -translate-y-1/2
 
+                                        text-gray-400
+
+                                        transition
+                                        hover:text-white
+                                    "
+                                >
+                                    {showPassword ? (
+                                        <EyeOff className="w-5 h-5" />
+                                    ) : (
+                                        <Eye className="w-5 h-5" />
+                                    )}
+                                </button>
                             </div>
                         </div>
 
                         {/* Confirm Password */}
-                        <div>
-
-                            <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        <div className="space-y-2">
+                            <label
+                                className="
+                                    text-sm
+                                    font-semibold
+                                    text-gray-200
+                                    block
+                                "
+                            >
                                 Confirm Password
                             </label>
 
                             <div className="relative">
+                                <Lock
+                                    className="
+                                        absolute
+                                        left-4 top-1/2
+                                        -translate-y-1/2
+
+                                        w-5 h-5
+                                        text-gray-400
+                                    "
+                                />
 
                                 <input
                                     type={showConfirmPassword ? "text" : "password"}
@@ -133,71 +434,209 @@ function Signup() {
                                     value={data.confirmPassword}
                                     onChange={handleChange}
                                     placeholder="Confirm your password"
-                                    className="w-full rounded-2xl border border-gray-300 bg-gray-50 px-4 py-3 pr-16 text-gray-700 outline-none transition-all duration-300 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                                    required
+                                    className="
+                                        w-full
+
+                                        rounded-2xl
+
+                                        border border-white/10
+
+                                        bg-white/5
+
+                                        py-3.5
+                                        pl-12 pr-14
+
+                                        text-sm
+                                        text-white
+
+                                        placeholder:text-gray-400
+
+                                        outline-none
+
+                                        transition-all duration-300
+
+                                        focus:border-blue-400
+                                        focus:bg-white/10
+                                        focus:ring-4
+                                        focus:ring-blue-500/20
+                                    "
                                 />
 
                                 <button
                                     type="button"
-                                    onClick={() =>
-                                        setShowConfirmPassword(!showConfirmPassword)
-                                    }
-                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-sm font-medium text-blue-600 hover:text-blue-700"
-                                >
-                                    {showConfirmPassword ? "Hide" : "Show"}
-                                </button>
+                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                    className="
+                                        absolute
+                                        right-4 top-1/2
+                                        -translate-y-1/2
 
+                                        text-gray-400
+
+                                        transition
+                                        hover:text-white
+                                    "
+                                >
+                                    {showConfirmPassword ? (
+                                        <EyeOff className="w-5 h-5" />
+                                    ) : (
+                                        <Eye className="w-5 h-5" />
+                                    )}
+                                </button>
                             </div>
                         </div>
 
                         {/* Terms */}
-                        <div className="flex items-start gap-3">
+                        <label
+                            className="
+                                flex items-start gap-3
 
+                                cursor-pointer
+                            "
+                        >
                             <input
                                 type="checkbox"
-                                className="mt-1 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                required
+                                className="
+                                    mt-1
+
+                                    h-4 w-4
+
+                                    rounded
+
+                                    border-gray-300
+
+                                    text-blue-600
+
+                                    focus:ring-blue-500
+                                "
                             />
 
-                            <p className="text-sm text-gray-500 leading-relaxed">
+                            <p
+                                className="
+                                    text-sm
+                                    leading-relaxed
+                                    text-gray-400
+                                "
+                            >
                                 I agree to the{" "}
-                                <span className="text-blue-600 font-medium cursor-pointer hover:underline">
+                                <span
+                                    className="
+                                        font-medium
+                                        text-blue-400
+
+                                        hover:text-blue-300
+                                        hover:underline
+                                    "
+                                >
                                     Terms & Conditions
                                 </span>{" "}
                                 and{" "}
-                                <span className="text-blue-600 font-medium cursor-pointer hover:underline">
+                                <span
+                                    className="
+                                        font-medium
+                                        text-blue-400
+
+                                        hover:text-blue-300
+                                        hover:underline
+                                    "
+                                >
                                     Privacy Policy
                                 </span>
                             </p>
-                        </div>
+                        </label>
 
                         {/* Submit Button */}
                         <button
                             type="submit"
                             disabled={loading}
-                            className={`w-full rounded-2xl py-3.5 text-sm font-semibold text-white shadow-lg transition-all duration-300
-                    
-                                ${
-                                    loading
-                                        ? "bg-gray-400 cursor-not-allowed"
-                                        : "bg-gradient-to-r from-blue-600 to-indigo-600 hover:scale-[1.01] hover:shadow-xl"
+                            className={`
+                                group
+
+                                mt-2
+
+                                w-full
+
+                                rounded-2xl
+
+                                py-3.5 px-5
+
+                                flex items-center justify-center gap-2
+
+                                text-sm font-semibold
+                                text-white
+
+                                shadow-2xl
+
+                                transition-all duration-300
+
+                                ${loading
+                                    ? `
+                                            cursor-not-allowed
+                                            bg-gray-500
+                                          `
+                                    : `
+                                            bg-gradient-to-r
+                                            from-blue-600
+                                            to-indigo-600
+
+                                            hover:scale-[1.02]
+                                            hover:shadow-blue-500/30
+                                          `
                                 }
                             `}
                         >
-                            {loading ? "Creating Account..." : "Create Account"}
+                            {loading ? (
+                                "Creating Account..."
+                            ) : (
+                                <>
+                                    Create Account
+                                    <ArrowRight
+                                        className="
+                                            w-4 h-4
+                                            transition-transform
+                                            group-hover:translate-x-1
+                                        "
+                                    />
+                                </>
+                            )}
                         </button>
                     </form>
 
                     {/* Footer */}
-                    <p className="mt-8 text-center text-sm text-gray-500">
+                    <div
+                        className="
+                            mt-8
+                            pt-6
 
-                        Already have an account?{" "}
+                            border-t border-white/10
 
-                        <Link
-                            to="/"
-                            className="font-semibold text-blue-600 hover:text-blue-700"
+                            text-center
+                        "
+                    >
+                        <p
+                            className="
+                                text-sm
+                                text-gray-400
+                            "
                         >
-                            Sign In
-                        </Link>
-                    </p>
+                            Already have an account?{" "}
+                            <Link
+                                to="/login"
+                                className="
+                                    font-semibold
+
+                                    text-blue-400
+
+                                    transition
+
+                                    hover:text-blue-300
+                                "
+                            >
+                                Sign In
+                            </Link>
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>

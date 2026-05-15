@@ -95,77 +95,144 @@ async def signup(user:SignupUser,db:Session=Depends(get_db)):
             detail=f"Unexpected Error {str(e)}"
         )
   
-
-
 @app.post("/signin")
-async def signin(user:SigninUser,db:Session=Depends(get_db)):
+async def signin(signin_user: SigninUser, db: Session = Depends(get_db)):
     try:
-        db_user=db.query(User).filter(User.email==user.email).first()
+
+        # Find user by email
+        db_user = db.query(User).filter(
+            User.email == signin_user.email
+        ).first()
+
         if not db_user:
             raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Invalid User Details !!" 
-                )
-        if not  verify_password(user.password,db_user.password):
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Invalid User Credentials !!"
+            )
+
+        # Verify password
+        if not verify_password(signin_user.password, db_user.password):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Invalid Paasword "
+                detail="Invalid Password !!"
             )
+
+        # Activate user
         if not db_user.is_active:
-            db_user.is_active=True
-            db.add(db_user)
+            db_user.is_active = True
             db.commit()
             db.refresh(db_user)
 
-        
-        access_token=token_genrator(
+        # Generate token
+        access_token = token_genrator(
             data={
-                "email":db_user.email,
-                "id":db_user.id,
+                "email": db_user.email,
+                "id": db_user.id,
             }
         )
+
         return {
-            "status_code":status.HTTP_200_OK,
-            "message":"Login SuccessFully !",
-            "access_token":access_token,
-            "token_type":"bearer"
+            "status_code": status.HTTP_200_OK,
+            "message": "Login Successfully!",
+            "access_token": access_token,
+            "token_type": "bearer"
         }
-    except IntegrityError as e:
-        raise HTTPException(
-            status_code=status.HTTP_200_OK,
-            detail=""
-        )
+
+    except HTTPException:
+        raise
+
     except SQLAlchemyError as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"DataBase Error {str(e)}"
+            detail=f"Database Error: {str(e)}"
         )
-    
+
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f" Unexcpected Error {str(e)}"
+            detail=f"Unexpected Error: {str(e)}"
         )
-
-
-
 # pending ------=
-@app.delete("/logout")
-async def logout(tokens:str=Depends(tokens)):
-    if not token_verification(tokens):
-        raise HTTPException(
-            status_code=401,
-            detail="Something went Wrong"
+
+@app.delete("/logout/{uid}")
+
+async def logout(
+    uid: int,
+    db: Session = Depends(tokens)
+):
+
+    try:
+
+        # Find User
+        user = (
+            db.query(User)
+            .filter(User.id == uid)
+            .first()
         )
 
-    return {
-        "status":200,
-        "message":"Logout Successfully !!"
-    }
+        # User Not Found
+        if not user:
+
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="User Does Not Exist !!"
+            )
+
+        # Already Logged Out
+        if user.is_active == False:
+
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="User Already Logged Out !!"
+            )
+
+        # Logout User
+        user.is_active = False
+
+        db.commit()
+
+        db.refresh(user)
+
+        return {
+
+            "status_code": status.HTTP_200_OK,
+
+            "message": "User Logout Successfully",
+
+            "data": {
+                "id": user.id,
+                "is_active": user.is_active,
+            }
+
+        }
+
+    except IntegrityError:
+
+        db.rollback()
+
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Integrity Error"
+        )
+
+    except SQLAlchemyError as e:
+
+        db.rollback()
+
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Database Error: {str(e)}"
+        )
+
+    except Exception as e:
+
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Unexpected Error: {str(e)}"
+        )
 
 
-
-@app.post("/add_user",response_model=ResponseSignupUser)
+@app.post("/add_user")
 async def add_user(user:SignupUser,db:Session=Depends(get_db)):
     try:
         user_name= db.query(User).filter(User.username==user.username).first()
@@ -309,7 +376,7 @@ async def update_user(
         )
     
     
-@app.get("/user/{uid}", response_model=UserResponse)
+@app.get("/get_single_user/{uid}", response_model=UserResponse)
 async def getuser(uid: int, db: Session = Depends(get_db)):
     try:
 
@@ -358,12 +425,14 @@ async def getusers(db: Session = Depends(get_db)):
 
         users = db.query(User).filter(
             User.user_status == True
-        ).all()
-
+        )
+        deleted_user=db.query(User).filter(User.user_status==False).count()
+        print(deleted_user)
         return {
             "status": status.HTTP_200_OK,
             "message": "Users Fetched Successfully!",
-            "data": users
+            "data": users,
+
         }
 
     except SQLAlchemyError as e:
@@ -379,11 +448,11 @@ async def getusers(db: Session = Depends(get_db)):
             detail=f"Unexpected Error {str(e)}"
         )
 
-@app.delete("/delete_user/{uid}", response_model=UserResponse)
+@app.delete("/soft_delete_user/{uid}", response_model=UserResponse)
 async def delete_user(uid: int, db: Session = Depends(get_db)):
     try:
 
-        user = db.query(User).filter(User.id == uid).first()
+        user = db.query(User).filter(User.id == uid,User.user_status==True).first()
 
         if not user:
             raise HTTPException(
@@ -436,7 +505,111 @@ async def delete_user(uid: int, db: Session = Depends(get_db)):
         )
   
 
-@app.put("/restore_user/{uid}", response_model=UserResponse)
+
+@app.get("/trash_user", response_model=UsersListResponse)
+async def hard_delete(db:Session=Depends(get_db)):
+    try:
+        trash_user=db.query(User).filter(User.user_status==False)
+        if not trash_user:
+            return {
+            "status":status.HTTP_200_OK,
+            "message":"Trash User Not Found ",
+            "data":{}
+        }
+        
+            re
+        return {
+            "status":status.HTTP_200_OK,
+            "message":"Trash User Fetched ",
+            "data":trash_user
+        }
+        
+    
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid user credential for deletion"
+        )
+
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Database Error {str(e)} !!",
+        )
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Unexpected Error {str(e)}"
+        )
+  
+
+
+@app.delete("/hard_delete_user/{uid}")
+async def hard_delete_user(
+    uid: int,
+    db: Session = Depends(get_db)
+):
+
+    try:
+
+        # FIND USER
+        user = db.query(User).filter(
+            User.id == uid
+        ).first()
+
+        # USER NOT FOUND
+        if not user:
+
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="User not found"
+            )
+
+        # ALLOW HARD DELETE ONLY FROM TRASH
+        if user.user_status:
+
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Move user to trash before permanent deletion"
+            )
+
+        # STORE USER DATA BEFORE DELETE
+        deleted_user = {
+            "id": user.id,
+            "username": user.username,
+            "email": user.email,
+            "created_at": user.created_at,
+        }
+
+        # DELETE USER
+        db.delete(user)
+
+        db.commit()
+
+        return {
+            "success": True,
+            "message": "User permanently deleted successfully",
+            "data": deleted_user
+        }
+
+    except HTTPException:
+
+        raise
+
+    except SQLAlchemyError as e:
+
+        db.rollback()
+
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Database error: {str(e)}"
+        )
+
+
+@app.patch("/restore_user/{uid}", response_model=UserResponse)
 async def restore_user(uid: int, db: Session = Depends(get_db)):
     try:
 

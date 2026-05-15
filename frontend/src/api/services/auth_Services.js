@@ -24,13 +24,12 @@ export const AuthServices = {
         return response.data;
     },
 
-    // Logout
-    logoutUser: async () => {
+logoutUser: async (id) => {
 
-        const response = await api.post(
-            "/logout"
-        );
+    const response = await api.delete(
+        `/logout/${id}`
+    );
 
-        return response.data;
-    },
+    return response;
+},
 };

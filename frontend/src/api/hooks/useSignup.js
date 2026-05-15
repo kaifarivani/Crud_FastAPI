@@ -96,7 +96,7 @@ export const useSignup = () => {
                 });
 
                 setTimeout(() => {
-                    navigate("/dashboard");
+                    navigate("/login");
                 }, 1500);
             }
 

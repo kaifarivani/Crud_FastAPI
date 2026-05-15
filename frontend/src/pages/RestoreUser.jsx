@@ -1,15 +1,15 @@
 import React from "react";
+
 import {
-    Mail,
-    User,
-    Save,
+    RotateCcw,
+    Hash,
     ArrowRight,
     ShieldCheck,
 } from "lucide-react";
 
-import { useUpdateUser } from "../api/hooks/useUpdateUser";
+import { useUserRestore } from "../api/hooks/useRestoreUser";
 
-export default function UpdateUser() {
+function RestoreUser() {
 
     const {
         data,
@@ -18,7 +18,7 @@ export default function UpdateUser() {
         success,
         handleChange,
         handleSubmit,
-    } = useUpdateUser();
+    } = useUserRestore();
 
     return (
 
@@ -88,7 +88,7 @@ export default function UpdateUser() {
                         text-white
                         tracking-tight
                     ">
-                        Update User
+                        Restore User
                     </h1>
 
                     <p className="
@@ -97,8 +97,8 @@ export default function UpdateUser() {
                         text-gray-300
                         leading-relaxed
                     ">
-                        Update and manage user account
-                        information securely.
+                        Restore deleted users securely
+                        using their user ID.
                     </p>
 
                 </div>
@@ -143,11 +143,11 @@ export default function UpdateUser() {
                         className="space-y-6"
                     >
 
-                        {/* Username */}
+                        {/* User ID */}
                         <div className="space-y-2">
 
                             <label
-                                htmlFor="username"
+                                htmlFor="id"
                                 className="
                                     text-sm
                                     font-semibold
@@ -155,12 +155,12 @@ export default function UpdateUser() {
                                     block
                                 "
                             >
-                                Username
+                                User ID
                             </label>
 
                             <div className="relative">
 
-                                <User className="
+                                <Hash className="
                                     absolute left-4 top-1/2
                                     -translate-y-1/2
                                     w-5 h-5
@@ -168,66 +168,12 @@ export default function UpdateUser() {
                                 " />
 
                                 <input
-                                    id="username"
-                                    type="text"
-                                    name="username"
-                                    value={data.username}
+                                    id="id"
+                                    type="number"
+                                    name="id"
+                                    value={data.id}
                                     onChange={handleChange}
-                                    placeholder="Enter username"
-                                    required
-                                    className="
-                                        w-full
-                                        rounded-2xl
-                                        border border-white/10
-                                        bg-white/5
-                                        py-3.5 pl-12 pr-4
-                                        text-sm text-white
-                                        placeholder:text-gray-400
-                                        outline-none
-                                        transition-all duration-300
-
-                                        focus:border-blue-400
-                                        focus:bg-white/10
-                                        focus:ring-4
-                                        focus:ring-blue-500/20
-                                    "
-                                />
-
-                            </div>
-
-                        </div>
-
-                        {/* Email */}
-                        <div className="space-y-2">
-
-                            <label
-                                htmlFor="email"
-                                className="
-                                    text-sm
-                                    font-semibold
-                                    text-gray-200
-                                    block
-                                "
-                            >
-                                Email Address
-                            </label>
-
-                            <div className="relative">
-
-                                <Mail className="
-                                    absolute left-4 top-1/2
-                                    -translate-y-1/2
-                                    w-5 h-5
-                                    text-gray-400
-                                " />
-
-                                <input
-                                    id="email"
-                                    type="email"
-                                    name="email"
-                                    value={data.email}
-                                    onChange={handleChange}
-                                    placeholder="Enter email"
+                                    placeholder="Enter User ID"
                                     required
                                     className="
                                         w-full
@@ -288,10 +234,10 @@ export default function UpdateUser() {
                         >
 
                             {loading ? (
-                                "Updating..."
+                                "Restoring..."
                             ) : (
                                 <>
-                                    Update User
+                                    Restore User
 
                                     <ArrowRight className="
                                         w-4 h-4
@@ -312,12 +258,18 @@ export default function UpdateUser() {
                         text-center
                     ">
 
-                        <p className="
+                        <div className="
+                            flex items-center justify-center gap-2
                             text-sm text-gray-400
                         ">
-                            Securely manage and update
-                            user details anytime.
-                        </p>
+
+                            <RotateCcw className="
+                                w-4 h-4 text-blue-400
+                            " />
+
+                            Restore deleted accounts instantly
+
+                        </div>
 
                     </div>
 
@@ -328,3 +280,5 @@ export default function UpdateUser() {
         </div>
     );
 }
+
+export default RestoreUser;

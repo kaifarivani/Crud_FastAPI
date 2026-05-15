@@ -23,120 +23,64 @@ export const useSignin = () => {
         });
     };
 
-    // const handleSubmit = async (e) => {
-
-    //     e.preventDefault();
-
-    //     try {
-
-    //         setLoading(true);
-
-    //         setError("");
-
-    //         const response = await AuthServices.signinUser(data);
-
-    //         console.log(response.status_code);
-
-    //         // success check
-    //         if (
-    //             response.status_code === 200 ||
-    //             response.status_code === 201
-    //         ) {
-    //             console.log("loginn")
-
-    //             // save token
-    //             localStorage.setItem(
-    //                 "token",
-    //                 response.data.access_token
-    //             );
-
-    //             // save user id
-    //             localStorage.setItem(
-    //                 "user_id",
-    //                 response.data.user.id
-    //             );
-
-    //             alert("Login Successful");
-
-    //             navigate("/dashboard");
-    //         }
-    //         alert("888")
-
-    //     } catch (err) {
-
-    //         console.log(err);
-
-    //         setError(
-    //             err?.response?.data?.detail ||
-    //             "Invalid Credentials"
-    //         );
-
-    //     } finally {
-
-    //         setLoading(false);
-    //     }
-    // };
-
-
-
     const handleSubmit = async (e) => {
 
-    e.preventDefault();
+        e.preventDefault();
 
-    try {
+        try {
 
-        setLoading(true);
+            setLoading(true);
+            setError("");
 
-        setError("");
+            const response = await AuthServices.signinUser(data);
 
-        const response = await AuthServices.signinUser(data);
+            console.log(response);
 
-        console.log(response);
+            // Correct Status Check
+            if (
+                response.status === 200 ||
+                response.status === 201
+            ) 
+{
+                console.log("Login Successful");
 
-        // Success Check
-        if (
-            response.status === 200 ||
-            response.status === 201
-        ) {
+                // Save Token
+                localStorage.setItem(
+                    "token",
+                    response.data.access_token
+                );
 
-            console.log("Login Successful");
-
-            // Save Token
-            localStorage.setItem(
-                "token",
-                response.data.access_token
-            );
-
-            // Save User ID (if exists)
-            if (response.data.user) {
-
+                // Save User ID
                 localStorage.setItem(
                     "user_id",
-                    response.data.user.id
+                    response.data.id || ""
                 );
-            }
 
-            alert("Login Successful");
+                console.log(
+                    localStorage.getItem("user_id"),
+                    localStorage.getItem("token")
+                );
 
-            // Redirect to Dashboard
+                alert("Login Successful");
+
+                }
+            
+            navigate("/dashboard/users");
+     
+        } catch (err) {
+
+            console.log(err);
+
+            setError(
+                err?.response?.data?.detail ||
+                "Invalid Credentials"
+            );
+
+        } finally {
+
+            setLoading(false);
         }
-        navigate("/dashboard/users");
-
-    } catch (err) {
-
-        console.log(err);
-
-        setError(
-            err?.response?.data?.detail ||
-            "Invalid Credentials"
-        );
-
-    } finally {
-
-        setLoading(false);
-    }
-};
-
+    };
 
     return {
         data,

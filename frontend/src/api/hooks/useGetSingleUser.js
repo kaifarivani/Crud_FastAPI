@@ -42,7 +42,7 @@ export const usegetSingleUser = (id) => {
 
             setDeleteLoading(true);
 
-            await UserServices.deleteUser(id);
+            await UserServices.softDeleteUser(id);
 
             return {
                 success: true,

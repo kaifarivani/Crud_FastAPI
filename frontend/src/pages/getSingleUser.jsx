@@ -1,8 +1,21 @@
-
-
 import React from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { usegetSingleUser } from "../api/hooks/getSingleUser";
+
+import {
+    useNavigate,
+    useParams,
+} from "react-router-dom";
+
+import {
+    Mail,
+    User,
+    Hash,
+    Pencil,
+    Trash2,
+    ArrowLeft,
+    ShieldCheck,
+} from "lucide-react";
+
+import { usegetSingleUser } from "../api/hooks/useGetSingleUser";
 
 function GetSingleUser() {
 
@@ -19,10 +32,10 @@ function GetSingleUser() {
     } = usegetSingleUser(id);
 
     const handleUpdate = () => {
-        navigate(`/update-user/${id}`);
+        navigate(`/dashboard/update-user/${id}`);
     };
 
-    const handleDelete = async () => {
+    const handleDelete = async (id) => {
 
         const confirmDelete = window.confirm(
             "Are you sure you want to delete this user?"
@@ -44,142 +57,474 @@ function GetSingleUser() {
         }
     };
 
+    /* Loading */
     if (loading) {
+
         return (
-            <div className="min-h-screen flex justify-center items-center bg-gradient-to-r from-blue-100 to-indigo-100">
-                <div className="text-2xl font-bold text-blue-600 animate-pulse">
-                    Loading User...
+            <div className="
+                min-h-screen
+                flex items-center justify-center
+                bg-gradient-to-br
+                from-slate-950
+                via-blue-950
+                to-slate-900
+            ">
+
+                <div className="text-center">
+
+                    <div className="
+                        w-16 h-16
+                        border-4 border-blue-500/30
+                        border-t-blue-500
+                        rounded-full
+                        animate-spin
+                        mx-auto
+                    "></div>
+
+                    <p className="
+                        mt-5
+                        text-xl
+                        font-semibold
+                        text-white
+                    ">
+                        Loading User...
+                    </p>
+
                 </div>
+
             </div>
         );
     }
 
+    /* Error */
     if (error) {
+
         return (
-            <div className="min-h-screen flex justify-center items-center bg-red-50 px-4">
-                <div className="bg-white shadow-lg rounded-2xl p-8 max-w-md w-full text-center">
-                    <h1 className="text-2xl font-bold text-red-600 mb-4">
+            <div className="
+                min-h-screen
+                flex items-center justify-center
+                bg-gradient-to-br
+                from-slate-950
+                via-red-950
+                to-slate-900
+                px-4
+            ">
+
+                <div className="
+                    w-full max-w-md
+                    rounded-3xl
+                    bg-white/10
+                    backdrop-blur-2xl
+                    border border-white/10
+                    p-8
+                    text-center
+                    shadow-2xl
+                ">
+
+                    <h1 className="
+                        text-3xl
+                        font-black
+                        text-red-400
+                    ">
                         Error
                     </h1>
 
-                    <p className="text-gray-700">
+                    <p className="
+                        mt-4
+                        text-gray-300
+                    ">
                         {error}
                     </p>
 
                     <button
                         onClick={() => navigate("/users")}
-                        className="mt-6 bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg transition"
+                        className="
+                            mt-6
+                            px-6 py-3
+                            rounded-2xl
+                            bg-red-500
+                            hover:bg-red-600
+                            text-white
+                            font-semibold
+                            transition
+                        "
                     >
                         Back
                     </button>
+
                 </div>
+
             </div>
         );
     }
 
+    /* No User */
     if (!user) {
+
         return (
-            <div className="min-h-screen flex justify-center items-center bg-gray-100">
-                <h1 className="text-3xl font-bold text-gray-500">
+            <div className="
+                min-h-screen
+                flex items-center justify-center
+                bg-slate-950
+            ">
+
+                <h1 className="
+                    text-3xl
+                    font-bold
+                    text-gray-400
+                ">
                     User Not Found
                 </h1>
+
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-indigo-100 flex justify-center items-center p-5">
 
-            <div className="bg-white/90 backdrop-blur-lg shadow-2xl rounded-3xl w-full max-w-lg overflow-hidden">
+        <div className="
+            min-h-screen
+            bg-gradient-to-br
+            from-slate-950
+            via-blue-950
+            to-slate-900
+            flex items-center justify-center
+            px-4 py-10
+            relative overflow-hidden
+        ">
 
-                {/* Header */}
-                <div className="bg-gradient-to-r from-blue-600 to-indigo-600 h-32 relative">
+            {/* Background Glow */}
+            <div className="
+                absolute top-[-120px] left-[-120px]
+                w-80 h-80
+                bg-blue-500/20
+                blur-3xl rounded-full
+            "></div>
 
-                    <div className="absolute left-1/2 transform -translate-x-1/2 top-14">
+            <div className="
+                absolute bottom-[-120px] right-[-120px]
+                w-96 h-96
+                bg-indigo-500/20
+                blur-3xl rounded-full
+            "></div>
 
-                        <div className="w-28 h-28 rounded-full border-4 border-white bg-white shadow-xl flex items-center justify-center text-5xl font-bold text-blue-600">
-                            {user.username?.charAt(0).toUpperCase()}
-                        </div>
+            {/* Card */}
+            <div className="
+                relative z-10
+                w-full max-w-xl
+                bg-white/10
+                backdrop-blur-2xl
+                border border-white/10
+                rounded-3xl
+                shadow-2xl
+                overflow-hidden
+            ">
 
+                {/* Top Header */}
+                <div className="
+                    relative
+                    px-8 pt-10 pb-20
+                    bg-gradient-to-r
+                    from-blue-600/20
+                    to-indigo-600/20
+                    border-b border-white/10
+                    text-center
+                ">
+
+                    {/* Back Button */}
+                    <button
+                        onClick={() => navigate("/users")}
+                        className="
+                            absolute left-6 top-6
+                            w-10 h-10
+                            rounded-xl
+                            bg-white/10
+                            hover:bg-white/20
+                            flex items-center justify-center
+                            transition
+                        "
+                    >
+                        <ArrowLeft className="w-5 h-5 text-white" />
+                    </button>
+
+                    {/* Avatar */}
+                    <div className="
+                        mx-auto
+                        flex items-center justify-center
+                        w-28 h-28
+                        rounded-full
+                        bg-gradient-to-br
+                        from-blue-500
+                        to-indigo-600
+                        shadow-2xl
+                        border-4 border-white/20
+                        text-white
+                        text-5xl
+                        font-black
+                    ">
+                        {user.username?.charAt(0).toUpperCase()}
                     </div>
+
+                    <h1 className="
+                        mt-6
+                        text-4xl
+                        font-black
+                        text-white
+                        tracking-tight
+                    ">
+                        {user.username}
+                    </h1>
+
+                    <p className="
+                        mt-2
+                        text-gray-300
+                    ">
+                        User Profile Details
+                    </p>
+
                 </div>
 
-                {/* Content */}
-                <div className="pt-20 px-8 pb-8">
+                {/* Body */}
+                <div className="p-8">
 
-                    <div className="text-center">
+                    {/* Info Cards */}
+                    <div className="space-y-5">
 
-                        <h1 className="text-3xl font-bold text-gray-800">
-                            {user.username}
-                        </h1>
+                        {/* User ID */}
+                        <div className="
+                            flex items-center gap-4
+                            rounded-2xl
+                            bg-white/5
+                            border border-white/10
+                            p-5
+                            hover:bg-white/10
+                            transition
+                        ">
 
-                        <p className="text-gray-500 mt-2">
-                            {user.email}
-                        </p>
+                            <div className="
+                                w-14 h-14
+                                rounded-2xl
+                                bg-blue-500/20
+                                flex items-center justify-center
+                            ">
+                                <Hash className="
+                                    w-6 h-6 text-blue-400
+                                " />
+                            </div>
+
+                            <div>
+                                <p className="
+                                    text-sm
+                                    text-gray-400
+                                ">
+                                    User ID
+                                </p>
+
+                                <h2 className="
+                                    text-lg
+                                    font-bold
+                                    text-white
+                                ">
+                                    #{user.id}
+                                </h2>
+                            </div>
+
+                        </div>
+
+                        {/* Username */}
+                        <div className="
+                            flex items-center gap-4
+                            rounded-2xl
+                            bg-white/5
+                            border border-white/10
+                            p-5
+                            hover:bg-white/10
+                            transition
+                        ">
+
+                            <div className="
+                                w-14 h-14
+                                rounded-2xl
+                                bg-indigo-500/20
+                                flex items-center justify-center
+                            ">
+                                <User className="
+                                    w-6 h-6 text-indigo-400
+                                " />
+                            </div>
+
+                            <div>
+                                <p className="
+                                    text-sm
+                                    text-gray-400
+                                ">
+                                    Username
+                                </p>
+
+                                <h2 className="
+                                    text-lg
+                                    font-bold
+                                    text-white
+                                ">
+                                    {user.username}
+                                </h2>
+                            </div>
+
+                        </div>
+
+                        {/* Email */}
+                        <div className="
+                            flex items-center gap-4
+                            rounded-2xl
+                            bg-white/5
+                            border border-white/10
+                            p-5
+                            hover:bg-white/10
+                            transition
+                        ">
+
+                            <div className="
+                                w-14 h-14
+                                rounded-2xl
+                                bg-cyan-500/20
+                                flex items-center justify-center
+                            ">
+                                <Mail className="
+                                    w-6 h-6 text-cyan-400
+                                " />
+                            </div>
+
+                            <div className="overflow-hidden">
+                                <p className="
+                                    text-sm
+                                    text-gray-400
+                                ">
+                                    Email Address
+                                </p>
+
+                                <h2 className="
+                                    text-lg
+                                    font-bold
+                                    text-white
+                                    break-all
+                                ">
+                                    {user.email}
+                                </h2>
+                            </div>
+
+                        </div>
 
                     </div>
 
-                    {/* User Info */}
-                    <div className="mt-8 space-y-4">
+                    {/* Action Buttons */}
+                    <div className="
+                        mt-8
+                        flex flex-col sm:flex-row gap-4
+                    ">
 
-                        <div className="bg-gray-100 hover:bg-gray-200 transition p-4 rounded-2xl">
-                            <p className="text-sm text-gray-500">
-                                User ID
-                            </p>
-
-                            <p className="text-lg font-semibold text-gray-800">
-                                #{user.id}
-                            </p>
-                        </div>
-
-                        <div className="bg-gray-100 hover:bg-gray-200 transition p-4 rounded-2xl">
-                            <p className="text-sm text-gray-500">
-                                Username
-                            </p>
-
-                            <p className="text-lg font-semibold text-gray-800">
-                                {user.username}
-                            </p>
-                        </div>
-
-                        <div className="bg-gray-100 hover:bg-gray-200 transition p-4 rounded-2xl">
-                            <p className="text-sm text-gray-500">
-                                Email Address
-                            </p>
-
-                            <p className="text-lg font-semibold text-gray-800 break-all">
-                                {user.email}
-                            </p>
-                        </div>
-                    </div>
-
-                    {/* Buttons */}
-                    <div className="flex gap-4 mt-8">
-
+                        {/* Update */}
                         <button
                             onClick={handleUpdate}
-                            className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-2xl font-semibold transition duration-300 shadow-md hover:shadow-xl"
+                            className="
+                                flex-1
+                                py-3.5 px-5
+                                rounded-2xl
+
+                                flex items-center justify-center gap-2
+
+                                bg-gradient-to-r
+                                from-blue-600
+                                to-indigo-600
+
+                                hover:scale-[1.02]
+                                hover:shadow-blue-500/30
+
+                                text-white
+                                font-semibold
+
+                                shadow-2xl
+                                transition-all duration-300
+                            "
                         >
-                            Update
+
+                            <Pencil className="w-5 h-5" />
+
+                            Update User
+
                         </button>
 
+                        {/* Delete */}
                         <button
                             onClick={handleDelete}
                             disabled={deleteLoading}
-                            className={`flex-1 py-3 rounded-2xl font-semibold transition duration-300 shadow-md hover:shadow-xl text-white
-                                
-                                ${deleteLoading
-                                    ? "bg-gray-400 cursor-not-allowed"
-                                    : "bg-red-500 hover:bg-red-600"
+                            className={`
+                                flex-1
+                                py-3.5 px-5
+                                rounded-2xl
+
+                                flex items-center justify-center gap-2
+
+                                text-white
+                                font-semibold
+
+                                shadow-2xl
+                                transition-all duration-300
+
+                                ${
+                                    deleteLoading
+                                        ? `
+                                            bg-gray-500
+                                            cursor-not-allowed
+                                          `
+                                        : `
+                                            bg-gradient-to-r
+                                            from-red-500
+                                            to-red-600
+
+                                            hover:scale-[1.02]
+                                            hover:shadow-red-500/30
+                                          `
                                 }
                             `}
                         >
-                            {deleteLoading ? "Deleting..." : "Delete"}
+
+                            <Trash2 className="w-5 h-5" />
+
+                            {deleteLoading
+                                ? "Deleting..."
+                                : "Delete User"
+                            }
+
                         </button>
+
+                    </div>
+
+                    {/* Footer */}
+                    <div className="
+                        mt-8 pt-6
+                        border-t border-white/10
+                        text-center
+                    ">
+
+                        <div className="
+                            flex items-center justify-center gap-2
+                            text-gray-400 text-sm
+                        ">
+
+                            <ShieldCheck className="
+                                w-4 h-4 text-blue-400
+                            " />
+
+                            Secure user management dashboard
+
+                        </div>
+
                     </div>
 
                 </div>
+
             </div>
+
         </div>
     );
 }
