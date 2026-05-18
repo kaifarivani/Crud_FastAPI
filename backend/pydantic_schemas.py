@@ -111,6 +111,7 @@ class UserData(BaseModel):
     id: int
     username: str
     email: str
+    role:str
     created_at: datetime
     user_status: bool
     is_active: bool

@@ -5,7 +5,7 @@ import { useNavigate } from "react-router";
 export const useGetUsers = () => {
 
     const [users, setUsers] = useState([]);
-
+    
     const [loading, setLoading] = useState(true);
     const navigate=useNavigate();
     const [error, setError] = useState("");
@@ -42,11 +42,12 @@ const deleteUser = async (id) => {
 
     try {
 
-        const user_id = localStorage.getItem("user_id");
-
-        console.log(user_id, id);
+   
         
-        // convert both to string
+        const user_id=localStorage.getItem("user_id");
+        
+        
+        
         const isOwnAccount = String(user_id) === String(id);
 
         if (isOwnAccount) {
@@ -70,7 +71,7 @@ const deleteUser = async (id) => {
         );
 
         // logout if own account deleted
-        alert("YUO self deleted ")
+        // alert("YUO self deleted ")
         alert(isOwnAccount)
         if (isOwnAccount) {
 

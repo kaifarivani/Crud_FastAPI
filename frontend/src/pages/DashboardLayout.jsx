@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import {
     Users,
@@ -6,10 +6,13 @@ import {
     ShieldCheck,
 } from "lucide-react";
 
+import axios from "axios";
+
 import {
     Link,
     Outlet,
     useLocation,
+    useNavigate,
 } from "react-router-dom";
 
 import { useLogout } from "../api/hooks/useLogout";
@@ -18,14 +21,60 @@ export function DashboardLayout() {
 
     const location = useLocation();
 
+    const navigate = useNavigate();
+
     const {
         logout,
         loading,
     } = useLogout();
 
+    // VERIFY USER
+    useEffect(() => {
+
+        const verifyUser = async () => {
+
+            try {
+
+                const token =
+                    localStorage.getItem("token");
+
+                // No token
+                if (!token) {
+
+                    navigate("/login");
+
+                    return;
+                }
+
+                // VERIFY FROM BACKEND
+                await axios.get(
+                    "http://localhost:8000/me",
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+
+            } catch (error) {
+
+                console.log(error);
+
+                // REMOVE TOKEN
+                localStorage.removeItem("token");
+
+                // REDIRECT LOGIN
+                navigate("/login");
+            }
+        };
+
+        verifyUser();
+
+    }, []);
+
     const menus = [
         {
-            name: "All Users",
+            name: " Users",
             path: "/dashboard/users",
             icon: Users,
         },
@@ -180,10 +229,10 @@ export function DashboardLayout() {
                     "
                 >
 
-                      <button
+                    <button
                         onClick={logout}
                         disabled={loading}
-                                            className="
+                        className="
                             w-full
                             flex items-center justify-center gap-3
                             rounded-2xl
@@ -236,6 +285,5 @@ export function DashboardLayout() {
             </div>
 
         </div>
-
     );
 }

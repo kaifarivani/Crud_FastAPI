@@ -15,6 +15,9 @@ export const useSignin = () => {
 
     const [error, setError] = useState("");
 
+
+
+    // Handle Input Change
     const handleChange = (e) => {
 
         setData({
@@ -23,6 +26,9 @@ export const useSignin = () => {
         });
     };
 
+
+
+    // Handle Submit
     const handleSubmit = async (e) => {
 
         e.preventDefault();
@@ -30,43 +36,58 @@ export const useSignin = () => {
         try {
 
             setLoading(true);
+
             setError("");
 
-            const response = await AuthServices.signinUser(data);
+            const response =
+                await AuthServices.signinUser(data);
 
             console.log(response);
 
-            // Correct Status Check
+            // Success Login
             if (
                 response.status === 200 ||
                 response.status === 201
             ) 
-{
-                console.log("Login Successful");
+            // {
 
-                // Save Token
+                // // Save Token
+                // localStorage.setItem(
+                //     "token",
+                //     response.access_token
+                // );
+
+                // // Save User ID
+                // localStorage.setItem(
+                //     "user_id",
+                //     response.id
+                // );
+
+                // alert("Login Successful");
+
+                // // Redirect
+                // navigate("/dashboard/users");
+            // }
+             // Save Token
                 localStorage.setItem(
                     "token",
-                    response.data.access_token
+                    response.access_token
                 );
 
                 // Save User ID
                 localStorage.setItem(
                     "user_id",
-                    response.data.id || ""
-                );
-
-                console.log(
-                    localStorage.getItem("user_id"),
-                    localStorage.getItem("token")
+                    response.id
                 );
 
                 alert("Login Successful");
+                localStorage.setItem(
+                    "token",
+                    response.access_token
+                );
 
-                }
-            
-            navigate("/dashboard/users");
-     
+                // Redirect
+                navigate("/dashboard/users");
         } catch (err) {
 
             console.log(err);
@@ -81,6 +102,8 @@ export const useSignin = () => {
             setLoading(false);
         }
     };
+
+
 
     return {
         data,

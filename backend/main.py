@@ -6,6 +6,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.exc import IntegrityError,SQLAlchemyError
 from sqlalchemy.orm import Session
 from authentication import *
+from jose import JWTError, jwt
+from fastapi.security import OAuth2PasswordBearer
+
+tokens = OAuth2PasswordBearer(tokenUrl="signin")
 
 
 
@@ -24,12 +28,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-# Doubttteddddd   
-
-from fastapi.security import OAuth2PasswordBearer
-tokens=OAuth2PasswordBearer(tokenUrl="signin") 
-blacklist=set() 
-
 
 
 @app.post("/signup",response_model=ResponseSignupUser)
@@ -101,7 +99,7 @@ async def signin(signin_user: SigninUser, db: Session = Depends(get_db)):
 
         # Find user by email
         db_user = db.query(User).filter(
-            User.email == signin_user.email
+            User.email == signin_user.email,User.user_status==True
         ).first()
 
         if not db_user:
@@ -134,6 +132,8 @@ async def signin(signin_user: SigninUser, db: Session = Depends(get_db)):
         return {
             "status_code": status.HTTP_200_OK,
             "message": "Login Successfully!",
+            "id":db_user.id,
+            "Role":db_user.role,
             "access_token": access_token,
             "token_type": "bearer"
         }
@@ -158,9 +158,9 @@ async def signin(signin_user: SigninUser, db: Session = Depends(get_db)):
 
 async def logout(
     uid: int,
-    db: Session = Depends(tokens)
+    db: Session = Depends(get_db)
 ):
-
+    print(type(uid))
     try:
 
         # Find User
@@ -267,6 +267,7 @@ async def add_user(user:SignupUser,db:Session=Depends(get_db)):
                 "Id":new_user.id,
                 "Username":new_user.username,
                 "Email":new_user.email,
+                "Role":new_user.role,
                 "Created_at":new_user.created_at,
                 "Status":"Employee " if new_user.user_status else "Not Employee",
                 "Is_active":"Login User" if new_user.is_active else "Logout User",
@@ -356,6 +357,7 @@ async def update_user(
                 "id": dbuser.id,
                 "username": dbuser.username,
                 "email": dbuser.email,
+                "Role":dbuser.role,
                 "created_at": dbuser.created_at,
                 "user_status": dbuser.user_status,
                 "is_active": dbuser.is_active
@@ -398,6 +400,7 @@ async def getuser(uid: int, db: Session = Depends(get_db)):
                 "id": user.id,
                 "username": user.username,
                 "email": user.email,
+                "role":user.role,
                 "created_at": user.created_at,
                 "user_status": user.user_status,
                 "is_active": user.is_active,
@@ -478,6 +481,7 @@ async def delete_user(uid: int, db: Session = Depends(get_db)):
                 "id": user.id,
                 "username": user.username,
                 "email": user.email,
+                "Role":user.role,
                 "created_at": user.created_at,
                 "user_status": user.user_status,
                 "is_active": user.is_active
@@ -581,6 +585,7 @@ async def hard_delete_user(
             "id": user.id,
             "username": user.username,
             "email": user.email,
+            "Role":user.role,
             "created_at": user.created_at,
         }
 
@@ -633,6 +638,7 @@ async def restore_user(uid: int, db: Session = Depends(get_db)):
                 "id": user.id,
                 "username": user.username,
                 "email": user.email,
+                "Role":user.role,
                 "created_at": user.created_at,
                 "user_status": user.user_status,
                 "is_active": user.is_active
@@ -658,3 +664,25 @@ async def restore_user(uid: int, db: Session = Depends(get_db)):
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Unexpected Error {str(e)}"
         )
+    
+# =========================================================
+# VERIFY LOGIN USER
+# =========================================================
+
+@app.get("/me")
+
+def get_me(
+
+    current_user: User = Depends(get_current_user)
+
+):
+
+    return {
+
+        "id": current_user.id,
+
+        "username": current_user.username,
+
+        "email": current_user.email,
+
+    }

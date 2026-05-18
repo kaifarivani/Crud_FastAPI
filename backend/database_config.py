@@ -3,7 +3,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 DATABASE_URL = (
-    "mssql+pyodbc://@localhost/Crud_Application" 
+    "mssql+pyodbc://@localhost/Crud" 
     "?driver=ODBC+Driver+17+for+SQL+Server"
     "&trusted_connection=yes"
 )

@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+
 import {
     Mail,
     Lock,
     ShieldCheck,
     ArrowRight,
+    Eye,
+    EyeOff,
 } from "lucide-react";
 
 import { useSignin } from "../api/hooks/useSignin";
@@ -18,6 +21,10 @@ export default function Signin() {
         handleChange,
         handleSubmit,
     } = useSignin();
+
+    // Password Toggle State
+    const [showPassword, setShowPassword] =
+        useState(false);
 
     return (
 
@@ -68,7 +75,6 @@ export default function Signin() {
                     bg-white/5
                 ">
 
-                    {/* Logo */}
                     <div className="
                         mx-auto mb-6
                         flex items-center justify-center
@@ -184,25 +190,16 @@ export default function Signin() {
                         {/* Password */}
                         <div className="space-y-2">
 
-                            <div className="
-                                flex items-center justify-between
-                            ">
-
-                                <label
-                                    htmlFor="password"
-                                    className="
-                                        text-sm
-                                        font-semibold
-                                        text-gray-200
-                                    "
-                                >
-                                    Password
-                                </label>
-
-                               
-
-                            </div>
-                            
+                            <label
+                                htmlFor="password"
+                                className="
+                                    text-sm
+                                    font-semibold
+                                    text-gray-200
+                                "
+                            >
+                                Password
+                            </label>
 
                             <div className="relative">
 
@@ -215,7 +212,11 @@ export default function Signin() {
 
                                 <input
                                     id="password"
-                                    type="password"
+                                    type={
+                                        showPassword
+                                            ? "text"
+                                            : "password"
+                                    }
                                     name="password"
                                     value={data.password}
                                     onChange={handleChange}
@@ -227,7 +228,7 @@ export default function Signin() {
                                         rounded-2xl
                                         border border-white/10
                                         bg-white/5
-                                        py-3.5 pl-12 pr-4
+                                        py-3.5 pl-12 pr-14
                                         text-sm text-white
                                         placeholder:text-gray-400
                                         outline-none
@@ -240,19 +241,34 @@ export default function Signin() {
                                     "
                                 />
 
-                            </div>
-                                {/* <button
+                                {/* Eye Button */}
+                                <button
                                     type="button"
+                                    onClick={() =>
+                                        setShowPassword(
+                                            !showPassword
+                                        )
+                                    }
                                     className="
-                                        text-sm
-                                        font-medium
-                                        text-blue-400
-                                        hover:text-blue-300
+                                        absolute
+                                        right-4 top-1/2
+                                        -translate-y-1/2
+                                        text-gray-400
+                                        hover:text-white
                                         transition
                                     "
                                 >
-                                    Forgot Password?
-                                </button> */}
+
+                                    {showPassword ? (
+                                        <EyeOff className="w-5 h-5" />
+                                    ) : (
+                                        <Eye className="w-5 h-5" />
+                                    )}
+
+                                </button>
+
+                            </div>
+
                         </div>
 
                         {/* Remember */}
