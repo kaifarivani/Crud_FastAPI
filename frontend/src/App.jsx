@@ -22,7 +22,7 @@ function App() {
 
         <BrowserRouter>
 
-            <Routes>
+            <Routes>    
 
                 <Route path="/*" element={<PageNotFound/>}/>
 

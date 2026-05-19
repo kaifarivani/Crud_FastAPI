@@ -1,8 +1,8 @@
 import React from "react";
+
 import {
     Mail,
     User,
-    Save,
     ArrowRight,
     ShieldCheck,
 } from "lucide-react";
@@ -21,126 +21,48 @@ export default function UpdateUser() {
     } = useUpdateUser();
 
     return (
-
-        <div className="
-            min-h-screen w-full
-            bg-gradient-to-br
-            from-slate-950
-            via-blue-950
-            to-slate-900
-            flex items-center justify-center
-            px-4 py-8
-            overflow-hidden
-            relative
-        ">
-
-            {/* Background Glow */}
-            <div className="
-                absolute top-[-120px] left-[-120px]
-                w-80 h-80
-                bg-blue-500/20
-                blur-3xl rounded-full
-            "></div>
-
-            <div className="
-                absolute bottom-[-120px] right-[-120px]
-                w-96 h-96
-                bg-indigo-500/20
-                blur-3xl rounded-full
-            "></div>
+        <div className="min-h-screen w-full bg-slate-950 flex items-center justify-center px-4 py-6">
 
             {/* Card */}
-            <div className="
-                relative z-10
-                w-full max-w-md
-                bg-white/10
-                backdrop-blur-2xl
-                border border-white/20
-                rounded-3xl
-                shadow-2xl
-                overflow-hidden
-            ">
+            <div className="w-full max-w-md rounded-2xl border border-slate-800 bg-slate-900 shadow-2xl">
 
                 {/* Header */}
-                <div className="
-                    px-8 pt-10 pb-8
-                    text-center
-                    border-b border-white/10
-                    bg-white/5
-                ">
+                <div className="border-b border-slate-800 px-6 pt-6 pb-5 text-center sm:px-8">
 
-                    {/* Logo */}
-                    <div className="
-                        mx-auto mb-6
-                        flex items-center justify-center
-                        w-20 h-20
-                        rounded-3xl
-                        bg-gradient-to-br
-                        from-blue-500 to-indigo-600
-                        shadow-xl
-                    ">
-                        <ShieldCheck className="w-10 h-10 text-white" />
+                    <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-600 shadow-lg shadow-blue-600/20">
+                        <ShieldCheck className="h-7 w-7 text-white" />
                     </div>
 
-                    <h1 className="
-                        text-4xl
-                        font-black
-                        text-white
-                        tracking-tight
-                    ">
+                    <h1 className="text-2xl font-bold tracking-tight text-white">
                         Update User
                     </h1>
 
-                    <p className="
-                        mt-3
-                        text-sm
-                        text-gray-300
-                        leading-relaxed
-                    ">
-                        Update and manage user account
-                        information securely.
+                    <p className="mt-2 text-sm leading-6 text-slate-400">
+                        Update and manage user information securely and professionally.
                     </p>
 
                 </div>
 
                 {/* Form */}
-                <div className="p-8">
+                <div className="p-6 sm:p-8">
 
                     {/* Success */}
                     {success && (
-                        <div className="
-                            mb-6
-                            rounded-2xl
-                            border border-green-400/30
-                            bg-green-500/10
-                            px-4 py-3
-                            text-sm
-                            text-green-300
-                            backdrop-blur-sm
-                        ">
+                        <div className="mb-4 rounded-xl border border-green-500/20 bg-green-500/10 px-4 py-3 text-sm text-green-300">
                             {success}
                         </div>
                     )}
 
                     {/* Error */}
                     {error && (
-                        <div className="
-                            mb-6
-                            rounded-2xl
-                            border border-red-400/30
-                            bg-red-500/10
-                            px-4 py-3
-                            text-sm
-                            text-red-300
-                            backdrop-blur-sm
-                        ">
+                        <div className="mb-4 rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-300">
                             {error}
                         </div>
                     )}
 
                     <form
                         onSubmit={handleSubmit}
-                        className="space-y-6"
+                        className="space-y-4"
                     >
 
                         {/* Username */}
@@ -148,24 +70,14 @@ export default function UpdateUser() {
 
                             <label
                                 htmlFor="username"
-                                className="
-                                    text-sm
-                                    font-semibold
-                                    text-gray-200
-                                    block
-                                "
+                                className="block text-sm font-medium text-slate-200"
                             >
                                 Username
                             </label>
 
                             <div className="relative">
 
-                                <User className="
-                                    absolute left-4 top-1/2
-                                    -translate-y-1/2
-                                    w-5 h-5
-                                    text-gray-400
-                                " />
+                                <User className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
 
                                 <input
                                     id="username"
@@ -175,22 +87,7 @@ export default function UpdateUser() {
                                     onChange={handleChange}
                                     placeholder="Enter username"
                                     required
-                                    className="
-                                        w-full
-                                        rounded-2xl
-                                        border border-white/10
-                                        bg-white/5
-                                        py-3.5 pl-12 pr-4
-                                        text-sm text-white
-                                        placeholder:text-gray-400
-                                        outline-none
-                                        transition-all duration-300
-
-                                        focus:border-blue-400
-                                        focus:bg-white/10
-                                        focus:ring-4
-                                        focus:ring-blue-500/20
-                                    "
+                                    className="w-full rounded-xl border border-slate-700 bg-slate-950 py-3 pl-11 pr-4 text-sm text-white placeholder:text-slate-500 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
                                 />
 
                             </div>
@@ -202,24 +99,14 @@ export default function UpdateUser() {
 
                             <label
                                 htmlFor="email"
-                                className="
-                                    text-sm
-                                    font-semibold
-                                    text-gray-200
-                                    block
-                                "
+                                className="block text-sm font-medium text-slate-200"
                             >
                                 Email Address
                             </label>
 
                             <div className="relative">
 
-                                <Mail className="
-                                    absolute left-4 top-1/2
-                                    -translate-y-1/2
-                                    w-5 h-5
-                                    text-gray-400
-                                " />
+                                <Mail className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
 
                                 <input
                                     id="email"
@@ -229,22 +116,7 @@ export default function UpdateUser() {
                                     onChange={handleChange}
                                     placeholder="Enter email"
                                     required
-                                    className="
-                                        w-full
-                                        rounded-2xl
-                                        border border-white/10
-                                        bg-white/5
-                                        py-3.5 pl-12 pr-4
-                                        text-sm text-white
-                                        placeholder:text-gray-400
-                                        outline-none
-                                        transition-all duration-300
-
-                                        focus:border-blue-400
-                                        focus:bg-white/10
-                                        focus:ring-4
-                                        focus:ring-blue-500/20
-                                    "
+                                    className="w-full rounded-xl border border-slate-700 bg-slate-950 py-3 pl-11 pr-4 text-sm text-white placeholder:text-slate-500 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
                                 />
 
                             </div>
@@ -255,36 +127,11 @@ export default function UpdateUser() {
                         <button
                             type="submit"
                             disabled={loading}
-                            className={`
-                                group
-                                w-full
-                                rounded-2xl
-                                py-3.5 px-5
-
-                                flex items-center justify-center gap-2
-
-                                text-sm font-semibold
-                                text-white
-
-                                shadow-2xl
-                                transition-all duration-300
-
-                                ${
-                                    loading
-                                        ? `
-                                            cursor-not-allowed
-                                            bg-gray-500
-                                          `
-                                        : `
-                                            bg-gradient-to-r
-                                            from-blue-600
-                                            to-indigo-600
-
-                                            hover:scale-[1.02]
-                                            hover:shadow-blue-500/30
-                                          `
-                                }
-                            `}
+                            className={`group flex w-full items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold text-white transition ${
+                                loading
+                                    ? "cursor-not-allowed bg-slate-700"
+                                    : "bg-blue-600 hover:bg-blue-700"
+                            }`}
                         >
 
                             {loading ? (
@@ -293,11 +140,7 @@ export default function UpdateUser() {
                                 <>
                                     Update User
 
-                                    <ArrowRight className="
-                                        w-4 h-4
-                                        transition-transform
-                                        group-hover:translate-x-1
-                                    " />
+                                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                                 </>
                             )}
 
@@ -306,17 +149,10 @@ export default function UpdateUser() {
                     </form>
 
                     {/* Footer */}
-                    <div className="
-                        mt-8 pt-6
-                        border-t border-white/10
-                        text-center
-                    ">
+                    <div className="mt-6 border-t border-slate-800 pt-5 text-center">
 
-                        <p className="
-                            text-sm text-gray-400
-                        ">
-                            Securely manage and update
-                            user details anytime.
+                        <p className="text-sm text-slate-400">
+                            Securely manage and update user details anytime.
                         </p>
 
                     </div>

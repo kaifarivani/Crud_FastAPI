@@ -1,23 +1,16 @@
-
 import React, { useEffect, useMemo, useState } from "react";
-
 import { useGetTrashUsers } from "../api/hooks/useGetTrashUser";
-
 import {
     Search,
     Trash2,
     Users,
-    UserX,
     RotateCcw,
     X,
     ShieldAlert,
+    ArrowLeft,
 } from "lucide-react";
 
-export function GetTrashUser({
-    open,
-    setOpen,
-}) {
-
+export function GetTrashUser({ open, setOpen }) {
     const {
         users = [],
         loading,
@@ -28,1099 +21,341 @@ export function GetTrashUser({
     } = useGetTrashUsers();
 
     const [search, setSearch] = useState("");
+    const [filter, setFilter] = useState("all");
 
-    const [filter, setFilter] =
-        useState("all");
-
-    // =========================
-    // DISABLE BODY SCROLL
-    // =========================
     useEffect(() => {
-
         if (open) {
-            document.body.style.overflow =
-                "hidden";
+            document.body.style.overflow = "hidden";
         } else {
-            document.body.style.overflow =
-                "auto";
+            document.body.style.overflow = "auto";
         }
 
         return () => {
-            document.body.style.overflow =
-                "auto";
+            document.body.style.overflow = "auto";
         };
-
     }, [open]);
 
-    // =========================
-    // FILTER USERS
-    // =========================
+    const deletedUsers = useMemo(() => {
+        return users.filter((user) => user.user_status === false);
+    }, [users]);
+
     const filteredUsers = useMemo(() => {
-
-        return users.filter((user) => {
-
+        return deletedUsers.filter((user) => {
             const matchesSearch =
-
-                user.username
-                    ?.toLowerCase()
-                    .includes(
-                        search.toLowerCase()
-                    )
-
-                ||
-
-                user.email
-                    ?.toLowerCase()
-                    .includes(
-                        search.toLowerCase()
-                    );
-
-            if (filter === "active") {
-
-                return (
-                    user.user_status === true &&
-                    matchesSearch
-                );
-            }
-
-            if (filter === "deleted") {
-
-                return (
-                    user.user_status === false &&
-                    matchesSearch
-                );
-            }
+                user.username?.toLowerCase().includes(search.toLowerCase()) ||
+                user.email?.toLowerCase().includes(search.toLowerCase());
 
             return matchesSearch;
-
         });
+    }, [deletedUsers, search, filter]);
 
-    }, [users, search, filter]);
-
-    // =========================
-    // CLOSE MODAL
-    // =========================
     if (!open) return null;
 
     return (
-
-        <div
-            className="
-                fixed inset-0
-                z-50
-
-                bg-slate-900
-                backdrop-blur-md
-
-                flex items-center justify-center
-
-                mx-10
-            "
-        >
-
-            {/* BACKDROP */}
-            <div
-                className="absolute inset-0"
-                onClick={() =>
-                    setOpen(false)
-                }
-            />
-
-            {/* MODAL */}
-            <div
-                className="
-                    relative z-10
-
-                    w-full
-                    max-w-6xl
-
-                    max-h-[95vh]
-
-                    overflow-hidden
-
-                    rounded-3xl
-
-                    border border-white/10
-
-                    bg-slate-900
-
-                "
-            >
-
-                {/* HEADER */}
-                <div
-                    className="
-                        flex items-center
-                        justify-between
-
-                        border-b border-white/10
-
-                        px-10 py-5
-                    "
-                >
-
-                    <div>
-
-                        <p
-                            className="
-                                text-2xl
-                                font-black
-                                text-white
-                            "
-                        >
-                            Trash Users
-                        </p>
-
-                        <p
-                            className="
-                                mt-1
-                                text-sm
-                                text-white
-                            "
-                        >
-                            Restore or permanently
-                            delete users
-                        </p>
-
-                    </div>
-
-                    {/* CLOSE */}
-                    <button
-                        onClick={() =>
-                            setOpen(false)
-                        }
-                        className="
-                            w-11 h-11
-
-                            rounded-2xl
-
-                            bg-white/5
-
-                            flex items-center
-                            justify-center
-
-                            text-white
-
-                            hover:bg-red-500
-
-                            transition-all
-                        "
-                    >
-
-                        <X className="w-5 h-5" />
-
-                    </button>
-
-                </div>
-
-                {/* BODY */}
-                <div
-                    className="
-                        overflow-y-auto
-                        max-h-[calc(95vh-90px)]
-
-                        p-6
-                        space-y-6
-                    "
-                >
-
-                    {/* LOADING */}
-                    {
-                        loading && (
-
-                            <div
-                                className="
-                                    flex items-center
-                                    justify-center
-
-                                    py-24
-                                "
-                            >
-
-                                <div
-                                    className="
-                                        text-center
-                                    "
-                                >
-
-                                    <div
-                                        className="
-                                            w-14 h-14
-
-                                            border-4
-                                            border-red-500/20
-                                            border-t-red-500
-
-                                            rounded-full
-                                            animate-spin
-
-                                            mx-auto
-                                        "
-                                    />
-
-                                    <h2
-                                        className="
-                                            mt-5
-
-                                            text-lg
-                                            font-bold
-
-                                            text-white
-                                        "
+        <div className="fixed inset-0 z-50 bg-slate-950 text-white">
+            <div className="h-full w-full overflow-y-auto">
+                <div className="min-h-screen p-4 sm:p-6 lg:p-8">
+                    <div className="mx-auto max-w-7xl space-y-6">
+                        {/* Header */}
+                        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                            <div>
+                                <div className="flex items-center gap-3">
+                                    <button
+                                        onClick={() => setOpen(false)}
+                                        className="inline-flex items-center gap-2 rounded-xl border border-slate-700 bg-slate-900 px-4 py-2.5 text-sm font-medium text-slate-200 transition hover:bg-slate-800"
                                     >
-                                        Loading Trash
-                                        Users...
-                                    </h2>
-
+                                        <ArrowLeft className="h-4 w-4" />
+                                        Back
+                                    </button>
                                 </div>
 
+                                <h1 className="mt-4 text-2xl font-bold tracking-tight text-white sm:text-3xl">
+                                    Trash Users
+                                </h1>
+                                <p className="mt-2 text-sm text-slate-400">
+                                    Restore users or permanently remove them from the system.
+                                </p>
                             </div>
-                        )
-                    }
 
-                    {/* ERROR */}
-                    {
-                        error && (
-
-                            <div
-                                className="
-                                    rounded-3xl
-
-                                    border
-                                    border-red-500/20
-
-                                    bg-red-500/10
-
-                                    p-8
-
-                                    text-center
-                                "
+                            <button
+                                onClick={() => setOpen(false)}
+                                className="inline-flex items-center gap-2 rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-2.5 text-sm font-semibold text-red-400 transition hover:bg-red-500/20"
                             >
+                                <X className="h-4 w-4" />
+                                Close
+                            </button>
+                        </div>
 
-                                <ShieldAlert
-                                    className="
-                                        w-14 h-14
-                                        text-red-400
+                        {/* Loading */}
+                        {loading && (
+                            <div className="flex min-h-[400px] items-center justify-center rounded-2xl border border-slate-800 bg-slate-900">
+                                <div className="text-center">
+                                    <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-red-500/20 border-t-red-500" />
+                                    <p className="mt-4 text-sm font-medium text-slate-300">
+                                        Loading trash users...
+                                    </p>
+                                </div>
+                            </div>
+                        )}
 
-                                        mx-auto
-                                    "
-                                />
-
-                                <h2
-                                    className="
-                                        mt-4
-
-                                        text-2xl
-                                        font-black
-
-                                        text-red-400
-                                    "
-                                >
+                        {/* Error */}
+                        {error && (
+                            <div className="rounded-2xl border border-red-500/20 bg-red-500/10 p-8 text-center">
+                                <ShieldAlert className="mx-auto h-12 w-12 text-red-400" />
+                                <h2 className="mt-4 text-lg font-bold text-red-400">
                                     {error}
                                 </h2>
-
                             </div>
-                        )
-                    }
+                        )}
 
-                    {/* CONTENT */}
-                    {
-                        !loading && !error && (
+                        {/* Content */}
+                        {!loading && !error && (
                             <>
-                                {/* STATS */}
-                                <div
-                                    className="
-                                        grid
-                                        grid-cols-1
-                                        md:grid-cols-3
-                                        gap-5
-                                    "
-                                >
-
-                                    {/* TOTAL */}
-                                    <div
-                                        className="
-                                            rounded-3xl
-
-                                            border
-                                            border-white/10
-
-                                            bg-white/5
-
-                                            p-6
-                                        "
-                                    >
-
-                                        <div
-                                            className="
-                                                flex
-                                                items-center
-                                                justify-between
-                                            "
-                                        >
-
+                                {/* Stats */}
+                                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+                                    <div className="rounded-2xl border border-slate-800 bg-slate-900 p-5">
+                                        <div className="flex items-center justify-between">
                                             <div>
-
-                                                <p
-                                                    className="
-                                                        text-slate-400
-                                                    "
-                                                >
-                                                    Total
-                                                    Users
+                                                <p className="text-sm text-slate-400">
+                                                    Trash Users
                                                 </p>
-
-                                                <h2
-                                                    className="
-                                                        mt-3
-
-                                                        text-3xl
-                                                        font-black
-
-                                                        text-white
-                                                    "
-                                                >
-                                                    {
-                                                        users.length
-                                                    }
+                                                <h2 className="mt-2 text-2xl font-bold text-white">
+                                                    {deletedUsers.length}
                                                 </h2>
-
                                             </div>
-
-                                            <div
-                                                className="
-                                                    w-16 h-16
-
-                                                    rounded-2xl
-
-                                                    bg-blue-500/20
-
-                                                    flex
-                                                    items-center
-                                                    justify-center
-                                                "
-                                            >
-
-                                                <Users
-                                                    className="
-                                                        text-blue-400
-                                                    "
-                                                />
-
+                                            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-red-500/10">
+                                                <Trash2 className="h-6 w-6 text-red-400" />
                                             </div>
-
                                         </div>
-
                                     </div>
 
-                                    {/* TRASH */}
-                                    <div
-                                        className="
-                                            rounded-3xl
-
-                                            border
-                                            border-white/10
-
-                                            bg-white/5
-
-                                            p-6
-                                        "
-                                    >
-
-                                        <div
-                                            className="
-                                                flex
-                                                items-center
-                                                justify-between
-                                            "
-                                        >
-
+                                    <div className="rounded-2xl border border-slate-800 bg-slate-900 p-5">
+                                        <div className="flex items-center justify-between">
                                             <div>
-
-                                                <p
-                                                    className="
-                                                        text-slate-400
-                                                    "
-                                                >
-                                                    Trash
-                                                    Users
+                                                <p className="text-sm text-slate-400">
+                                                    Search Results
                                                 </p>
-
-                                                <h2
-                                                    className="
-                                                        mt-3
-
-                                                        text-3xl
-                                                        font-black
-
-                                                        text-white
-                                                    "
-                                                >
-                                                    {
-                                                        users.filter(
-                                                            (
-                                                                u
-                                                            ) =>
-                                                                !u.user_status
-                                                        )
-                                                            .length
-                                                    }
+                                                <h2 className="mt-2 text-2xl font-bold text-white">
+                                                    {filteredUsers.length}
                                                 </h2>
-
                                             </div>
-
-                                            <div
-                                                className="
-                                                    w-16 h-16
-
-                                                    rounded-2xl
-
-                                                    bg-yellow-500/20
-
-                                                    flex
-                                                    items-center
-                                                    justify-center
-                                                "
-                                            >
-
-                                                <UserX
-                                                    className="
-                                                        text-yellow-400
-                                                    "
-                                                />
-
+                                            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-500/10">
+                                                <Users className="h-6 w-6 text-blue-400" />
                                             </div>
-
                                         </div>
-
                                     </div>
 
-                                    {/* DELETED */}
-                                    <div
-                                        className="
-                                            rounded-3xl
-
-                                            border
-                                            border-white/10
-
-                                            bg-white/5
-
-                                            p-6
-                                        "
-                                    >
-
-                                        <div
-                                            className="
-                                                flex
-                                                items-center
-                                                justify-between
-                                            "
-                                        >
-
+                                    <div className="rounded-2xl border border-slate-800 bg-slate-900 p-5">
+                                        <div className="flex items-center justify-between">
                                             <div>
-
-                                                <p
-                                                    className="
-                                                        text-slate-400
-                                                    "
-                                                >
-                                                    Deleted
-                                                    Users
+                                                <p className="text-sm text-slate-400">
+                                                    Permanent Delete
                                                 </p>
-
-                                                <h2
-                                                    className="
-                                                        mt-3
-
-                                                        text-3xl
-                                                        font-black
-
-                                                        text-white
-                                                    "
-                                                >
-                                                    {
-                                                        users.filter(
-                                                            (
-                                                                u
-                                                            ) =>
-                                                                u.is_deleted
-                                                        )
-                                                            .length
-                                                    }
+                                                <h2 className="mt-2 text-2xl font-bold text-white">
+                                                    {deletedUsers.length}
                                                 </h2>
-
                                             </div>
-
-                                            <div
-                                                className="
-                                                    w-16 h-16
-
-                                                    rounded-2xl
-
-                                                    bg-red-500/20
-
-                                                    flex
-                                                    items-center
-                                                    justify-center
-                                                "
-                                            >
-
-                                                <Trash2
-                                                    className="
-                                                        text-red-400
-                                                    "
-                                                />
-
+                                            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-rose-500/10">
+                                                <Trash2 className="h-6 w-6 text-rose-400" />
                                             </div>
-
                                         </div>
-
                                     </div>
-
                                 </div>
 
-                                {/* SEARCH + FILTER */}
-                                <div
-                                    className="
-                                        flex
-                                        flex-col
-                                        lg:flex-row
+                                {/* Search + filter */}
+                                <div className="rounded-2xl border border-slate-800 bg-slate-900 p-4">
+                                    <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                                        <div className="relative w-full lg:max-w-md">
+                                            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                                            <input
+                                                type="text"
+                                                placeholder="Search trash users..."
+                                                value={search}
+                                                onChange={(e) => setSearch(e.target.value)}
+                                                className="w-full rounded-xl border border-slate-700 bg-slate-950 py-2.5 pl-10 pr-4 text-sm text-white outline-none transition placeholder:text-slate-500 focus:border-red-500"
+                                            />
+                                        </div>
 
-                                        gap-4
-                                        lg:items-center
-                                        lg:justify-between
-                                    "
-                                >
-
-                                    {/* SEARCH */}
-                                    <div
-                                        className="
-                                            relative
-
-                                            w-full
-                                            lg:max-w-md
-                                        "
-                                    >
-
-                                        <Search
-                                            className="
-                                                absolute
-                                                left-4
-                                                top-1/2
-                                                -translate-y-1/2
-
-                                                w-4 h-4
-
-                                                text-slate-400
-                                            "
-                                        />
-
-                                        <input
-                                            type="text"
-                                            placeholder="Search users..."
-                                            value={
-                                                search
-                                            }
-                                            onChange={(
-                                                e
-                                            ) =>
-                                                setSearch(
-                                                    e
-                                                        .target
-                                                        .value
-                                                )
-                                            }
-                                            className="
-                                                w-full
-
-                                                rounded-2xl
-
-                                                border
-                                                border-white/10
-
-                                                bg-white/5
-
-                                                py-3
-                                                pl-11
-                                                pr-4
-
-                                                text-white
-
-                                                outline-none
-
-                                                focus:ring-4
-                                                focus:ring-red-500/20
-                                            "
-                                        />
-
+                                        <div className="flex flex-wrap gap-2">
+                                            <button
+                                                onClick={() => setFilter("all")}
+                                                className="rounded-xl bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-700"
+                                            >
+                                                All Trash
+                                            </button>
+                                        </div>
                                     </div>
-
-                                    {/* FILTER */}
-                                    <select
-                                        value={filter}
-                                        onChange={(
-                                            e
-                                        ) =>
-                                            setFilter(
-                                                e
-                                                    .target
-                                                    .value
-                                            )
-                                        }
-                                        className="
-                                            rounded-2xl
-
-                                            border
-                                            border-white/10
-
-                                            bg-slate-900
-
-                                            px-4 py-3
-
-                                            text-white
-
-                                            outline-none
-                                        "
-                                    >
-
-                                        <option value="all">
-                                            All
-                                            Users
-                                        </option>
-
-                                        <option value="active">
-                                            Active
-                                        </option>
-
-                                        <option value="deleted">
-                                            Deleted
-                                        </option>
-
-                                    </select>
-
                                 </div>
 
-                                {/* TABLE */}
-                                <div
-                                    className="
-                                        overflow-x-auto
-
-                                        rounded-3xl
-
-                                        border
-                                        border-white/10
-                                    "
-                                >
-
-                                    <table
-                                        className="
-                                            w-full
-                                            min-w-[750px]
-                                        "
-                                    >
-
-                                        <thead
-                                            className="
-                                                bg-white/5
-                                            "
-                                        >
-
-                                            <tr>
-
-                                                <th
-                                                    className="
-                                                        px-6 py-4
-
-                                                        text-left
-
-                                                        text-sm
-                                                        font-semibold
-
-                                                        text-slate-300
-                                                    "
-                                                >
-                                                    User
-                                                </th>
-
-                                                <th
-                                                    className="
-                                                        px-6 py-4
-
-                                                        text-left
-
-                                                        text-sm
-                                                        font-semibold
-
-                                                        text-slate-300
-                                                    "
-                                                >
-                                                    Email
-                                                </th>
-
-                                                <th
-                                                    className="
-                                                        px-6 py-4
-
-                                                        text-left
-
-                                                        text-sm
-                                                        font-semibold
-
-                                                        text-slate-300
-                                                    "
-                                                >
-                                                    Status
-                                                </th>
-
-                                                <th
-                                                    className="
-                                                        px-6 py-4
-
-                                                        text-center
-
-                                                        text-sm
-                                                        font-semibold
-
-                                                        text-slate-300
-                                                    "
-                                                >
-                                                    Actions
-                                                </th>
-
-                                            </tr>
-
-                                        </thead>
-
-                                        <tbody>
-
-                                            {
-                                                filteredUsers.length >
-                                                    0 ? (
-
-                                                    filteredUsers.map(
-                                                        (
-                                                            user
-                                                        ) => (
-
-                                                            <tr
-                                                                key={
-                                                                    user.id
-                                                                }
-                                                                className="
-                                                                    border-b
-                                                                    border-white/5
-
-                                                                    hover:bg-white/5
-
-                                                                    transition
-                                                                "
-                                                            >
-
-                                                                {/* USER */}
-                                                                <td
-                                                                    className="
-                                                                        px-6 py-5
-                                                                    "
-                                                                >
-
-                                                                    <div
-                                                                        className="
-                                                                            flex
-                                                                            items-center
-                                                                            gap-4
-                                                                        "
-                                                                    >
-
-                                                                        <div
-                                                                            className="
-                                                                                w-12 h-12
-
-                                                                                rounded-2xl
-
-                                                                                bg-gradient-to-r
-                                                                                from-red-500
-                                                                                to-rose-600
-
-                                                                                flex
-                                                                                items-center
-                                                                                justify-center
-
-                                                                                text-white
-                                                                                font-bold
-                                                                            "
-                                                                        >
-
-                                                                            {
-                                                                                user.username
-                                                                                    ?.charAt(
-                                                                                        0
-                                                                                    )
-                                                                                    .toUpperCase()
-                                                                            }
-
-                                                                        </div>
-
-                                                                        <div>
-
-                                                                            <h3
-                                                                                className="
-                                                                                    text-white
-                                                                                    font-semibold
-                                                                                "
-                                                                            >
-                                                                                {
-                                                                                    user.username
-                                                                                }
-                                                                            </h3>
-
-                                                                            <p
-                                                                                className="
-                                                                                    text-sm
-                                                                                    text-slate-400
-                                                                                "
-                                                                            >
-                                                                                ID
-                                                                                #
-                                                                                {
-                                                                                    user.id
-                                                                                }
-                                                                            </p>
-
-                                                                        </div>
-
-                                                                    </div>
-
-                                                                </td>
-
-                                                                {/* EMAIL */}
-                                                                <td
-                                                                    className="
-                                                                        px-6 py-5
-
-                                                                        text-slate-300
-                                                                    "
-                                                                >
-                                                                    {
-                                                                        user.email
-                                                                    }
-                                                                </td>
-
-                                                                {/* STATUS */}
-                                                                <td
-                                                                    className="
-                                                                        px-6 py-5
-                                                                    "
-                                                                >
-
-                                                                    <span
-                                                                        className="
-                                                                            px-4 py-1.5
-
-                                                                            rounded-full
-
-                                                                            text-xs
-                                                                            font-semibold
-
-                                                                            border
-
-                                                                            bg-red-500/10
-                                                                            border-red-500/20
-                                                                            text-red-400
-                                                                        "
-                                                                    >
-                                                                        Deleted
-                                                                    </span>
-
-                                                                </td>
-
-                                                                {/* ACTION */}
-                                                                <td
-                                                                    className="
-                                                                        px-6 py-5
-                                                                    "
-                                                                >
-
-                                                                    <div
-                                                                        className="
-                                                                            flex
-                                                                            items-center
-                                                                            justify-center
-                                                                            gap-3
-                                                                        "
-                                                                    >
-
-                                                                        {/* RESTORE */}
-                                                                        <button
-                                                                            onClick={() =>
-                                                                                restoreUser(
-                                                                                    user.id
-                                                                                )
-                                                                            }
-                                                                            className="
-                                                                                w-10 h-10
-
-                                                                                rounded-xl
-
-                                                                                bg-green-500/10
-
-                                                                                text-green-400
-
-                                                                                flex
-                                                                                items-center
-                                                                                justify-center
-
-                                                                                hover:bg-green-500/20
-
-                                                                                transition
-                                                                            "
-                                                                        >
-
-                                                                            <RotateCcw
-                                                                                className="
-                                                                                    w-4 h-4
-                                                                                "
-                                                                            />
-
-                                                                        </button>
-
-                                                                        {/* DELETE */}
-                                                                        <button
-                                                                            onClick={() =>
-                                                                                deleteUser(
-                                                                                    user.id
-                                                                                )
-                                                                            }
-                                                                            className="
-                                                                                w-10 h-10
-
-                                                                                rounded-xl
-
-                                                                                bg-red-500/10
-
-                                                                                text-red-400
-
-                                                                                flex
-                                                                                items-center
-                                                                                justify-center
-
-                                                                                hover:bg-red-500/20
-
-                                                                                transition
-                                                                            "
-                                                                        >
-
-                                                                            <Trash2
-                                                                                className="
-                                                                                    w-4 h-4
-                                                                                "
-                                                                            />
-
-                                                                        </button>
-
-                                                                    </div>
-
-                                                                </td>
-
-                                                            </tr>
-                                                        )
-                                                    )
-
-                                                ) : (
-
-                                                    <tr>
-
-                                                        <td
-                                                            colSpan="4"
-                                                            className="
-                                                                py-20
-
-                                                                text-center
-                                                            "
+                                {/* Desktop Table */}
+                                <div className="hidden overflow-hidden rounded-2xl border border-slate-800 bg-slate-900 lg:block">
+                                    <div className="overflow-x-auto">
+                                        <table className="min-w-full text-sm">
+                                            <thead className="bg-slate-950/80">
+                                                <tr className="border-b border-slate-800 text-left">
+                                                    <th className="px-5 py-3 font-semibold text-slate-300">
+                                                        Username
+                                                    </th>
+                                                    <th className="px-5 py-3 font-semibold text-slate-300">
+                                                        Email
+                                                    </th>
+                                                    <th className="px-5 py-3 font-semibold text-slate-300">
+                                                        Status
+                                                    </th>
+                                                    <th className="px-5 py-3 font-semibold text-slate-300 text-right">
+                                                        Actions
+                                                    </th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                {filteredUsers.length > 0 ? (
+                                                    filteredUsers.map((user) => (
+                                                        <tr
+                                                            key={user.id}
+                                                            className="border-b border-slate-800/80 transition hover:bg-slate-800/40"
                                                         >
-
-                                                            <div
-                                                                className="
-                                                                    flex
-                                                                    flex-col
-                                                                    items-center
-                                                                    justify-center
-                                                                "
-                                                            >
-
-                                                                <div
-                                                                    className="
-                                                                        w-24 h-24
-
-                                                                        rounded-full
-
-                                                                        bg-white/5
-
-                                                                        flex
-                                                                        items-center
-                                                                        justify-center
-
-                                                                        mb-6
-                                                                    "
-                                                                >
-
-                                                                    <Trash2
-                                                                        className="
-                                                                            w-10 h-10
-                                                                            text-slate-500
-                                                                        "
-                                                                    />
-
+                                                            <td className="px-5 py-4">
+                                                                <div className="flex items-center gap-3">
+                                                                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-500/10 font-semibold uppercase text-red-400">
+                                                                        {user.username?.charAt(0) || "U"}
+                                                                    </div>
+                                                                    <div>
+                                                                        <div className="font-medium text-white">
+                                                                            {user.username || "N/A"}
+                                                                        </div>
+                                                                        <div className="text-xs text-slate-500">
+                                                                            ID #{user.id}
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
+                                                            </td>
 
-                                                                <h2
-                                                                    className="
-                                                                        text-3xl
-                                                                        font-bold
-                                                                        text-white
-                                                                    "
-                                                                >
-                                                                    {
-                                                                        emptyMessage ||
-                                                                        "No Trash Users"
-                                                                    }
-                                                                </h2>
+                                                            <td className="px-5 py-4 text-slate-300">
+                                                                {user.email || "N/A"}
+                                                            </td>
 
-                                                                <p
-                                                                    className="
-                                                                        mt-3
-
-                                                                        text-slate-400
-                                                                    "
-                                                                >
+                                                            <td className="px-5 py-4">
+                                                                <span className="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ring-1 bg-red-500/10 text-red-400 ring-red-500/20">
                                                                     Deleted
-                                                                    users
-                                                                    will
-                                                                    appear
-                                                                    here
-                                                                </p>
+                                                                </span>
+                                                            </td>
 
+                                                            <td className="px-5 py-4">
+                                                                <div className="flex items-center justify-end gap-2">
+                                                                    <button
+                                                                        onClick={() => restoreUser(user.id)}
+                                                                        className="inline-flex items-center gap-2 rounded-lg bg-emerald-500/10 px-3 py-2 text-emerald-400 transition hover:bg-emerald-500/20"
+                                                                    >
+                                                                        <RotateCcw className="h-4 w-4" />
+                                                                        Restore
+                                                                    </button>
+
+                                                                    <button
+                                                                        onClick={() => deleteUser(user.id)}
+                                                                        className="inline-flex items-center gap-2 rounded-lg bg-red-500/10 px-3 py-2 text-red-400 transition hover:bg-red-500/20"
+                                                                    >
+                                                                        <Trash2 className="h-4 w-4" />
+                                                                        Delete
+                                                                    </button>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    ))
+                                                ) : (
+                                                    <tr>
+                                                        <td colSpan={4} className="px-6 py-20 text-center">
+                                                            <div className="flex flex-col items-center justify-center">
+                                                                <div className="mb-5 flex h-20 w-20 items-center justify-center rounded-full bg-slate-800">
+                                                                    <Trash2 className="h-9 w-9 text-slate-500" />
+                                                                </div>
+                                                                <h2 className="text-2xl font-bold text-white">
+                                                                    {emptyMessage || "No Trash Users"}
+                                                                </h2>
+                                                                <p className="mt-2 text-slate-400">
+                                                                    Deleted users will appear here.
+                                                                </p>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                )}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                {/* Mobile Cards */}
+                                <div className="grid grid-cols-1 gap-4 lg:hidden">
+                                    {filteredUsers.length > 0 ? (
+                                        filteredUsers.map((user) => (
+                                            <div
+                                                key={user.id}
+                                                className="rounded-2xl border border-slate-800 bg-slate-900 p-4"
+                                            >
+                                                <div className="flex items-start gap-3">
+                                                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-red-500/10 font-semibold uppercase text-red-400">
+                                                        {user.username?.charAt(0) || "U"}
+                                                    </div>
+
+                                                    <div className="min-w-0 flex-1">
+                                                        <div className="flex flex-col gap-2">
+                                                            <div>
+                                                                <h3 className="truncate font-semibold text-white">
+                                                                    {user.username || "N/A"}
+                                                                </h3>
+                                                                <p className="truncate text-sm text-slate-400">
+                                                                    {user.email || "N/A"}
+                                                                </p>
+                                                                <p className="mt-1 text-xs text-slate-500">
+                                                                    ID #{user.id}
+                                                                </p>
                                                             </div>
 
-                                                        </td>
+                                                            <span className="inline-flex w-fit rounded-full px-2.5 py-1 text-xs font-semibold ring-1 bg-red-500/10 text-red-400 ring-red-500/20">
+                                                                Deleted
+                                                            </span>
 
-                                                    </tr>
-                                                )
-                                            }
+                                                            <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                                                                <button
+                                                                    onClick={() => restoreUser(user.id)}
+                                                                    className="inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-500/10 px-4 py-2.5 text-sm text-emerald-400 transition hover:bg-emerald-500/20"
+                                                                >
+                                                                    <RotateCcw className="h-4 w-4" />
+                                                                    Restore
+                                                                </button>
 
-                                        </tbody>
-
-                                    </table>
-
+                                                                <button
+                                                                    onClick={() => deleteUser(user.id)}
+                                                                    className="inline-flex items-center justify-center gap-2 rounded-lg bg-red-500/10 px-4 py-2.5 text-sm text-red-400 transition hover:bg-red-500/20"
+                                                                >
+                                                                    <Trash2 className="h-4 w-4" />
+                                                                    Delete
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <div className="rounded-2xl border border-slate-800 bg-slate-900 px-4 py-12 text-center">
+                                            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-slate-800">
+                                                <Trash2 className="h-8 w-8 text-slate-500" />
+                                            </div>
+                                            <h3 className="mt-4 text-lg font-semibold text-white">
+                                                {emptyMessage || "No Trash Users"}
+                                            </h3>
+                                            <p className="mt-2 text-sm text-slate-400">
+                                                Deleted users will appear here.
+                                            </p>
+                                        </div>
+                                    )}
                                 </div>
-
                             </>
-                        )
-                    }
-
+                        )}
+                    </div>
                 </div>
-
             </div>
-
         </div>
     );
 }
